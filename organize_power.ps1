@@ -1,25 +1,26 @@
 $path = "$($env:USERPROFILE)\Desktop\organized"
+# Create folder if it's not already created
 if (!(Test-Path $path)) {
 New-Item $path -type directory | Out-Null
 }
-#listaa tiedostejen päätteet
-$list = Get-Childitem  | foreach { $_.Extension.TrimStart(".") }  | Select-object -Unique #> file_ext.txt
-echo $list
-# Tee kansiot kaikille tiedoston tyypeille
+# Lists file extenstions of files and take out period from beginning of name
+$list = Get-Childitem  | foreach { $_.Extension.TrimStart(".") }  | Select-object -Unique #> debug.txt
+# echo $list -debug
+# Create folder for each filetype inside organize folder if not already created
 ForEach($dir in ($list))
 {
 if (!(Test-Path $path\$dir)) {
     New-Item $path\$dir -type directory | Out-Null
 }
 }
-#tee kansio kansioille
-#siirrä kansiot 
+# Make folder for all folders to be moved if not already created
 #
-if (!(Test-Path $path\kansiot)) {
-New-Item $path\Kansiot -type directory | Out-Null
+if (!(Test-Path $path\folders)) {
+New-Item $path\folders -type directory | Out-Null
 }
-Get-ChildItem -Exclude "organized" | ?{ $_.PSIsContainer } | Move-Item -Destination $path\kansiot
-#siirrä tiedostot ja kansiot omiin paikkoihin organize alle
+# Move all folders to "folders" folder
+Get-ChildItem -Exclude "organized" | ?{ $_.PSIsContainer } | Move-Item -Destination $path\folders
+# Create
 foreach($dir in ($list))
 {
 if (!($dir -eq "ps1")) {
